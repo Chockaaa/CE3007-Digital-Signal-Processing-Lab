@@ -51,39 +51,34 @@ def fnNormalize16BitToFloat(y_16bit):
 def fn_mostBasicCosineSignal():
     # Lets start with the most basic
     #y(theta) = cos(theta)
-    # theta = np.arange(0,4*np.pi,np.pi/10.0)
-    # y = 2.5*np.cos(theta)
-    # plt.figure(1)
-    # plt.plot(theta/(np.pi), y,'r--o');
-    # plt.xlabel('theta (pi)'); plt.ylabel('y(theta)')
-    # plt.title('sinusoid of signal (floating point)')
-    # plt.grid()
-    # plt.show()
-    # print('Above figure 0 shows cosine wrt to horizontal axis of angle theta')
+    theta = np.arange(0,4*np.pi,np.pi/10.0)
+    y = 2.5*np.cos(theta)
+    plt.figure(1)
+    plt.plot(theta/(np.pi), y,'r--o');
+    plt.xlabel('theta (pi)'); plt.ylabel('y(theta)')
+    plt.title('sinusoid of signal (floating point)')
+    plt.grid()
+    plt.show()
+    print('Above figure 0 shows cosine wrt to horizontal axis of angle theta')
 
-    t = np.arange(0,0.01,0.0001)
-    F = 1000.0   #  1 cycle per second
-    y = 0.1*np.cos(2*np.pi*F*t)
+    t = np.arange(0,2.0,0.1)
+    F = 1.0   #  1 cycle per second
+    y = 1*np.cos(2*np.pi*F*t)
     plt.figure(2)
-    plt.plot(t, y,'g-');
+    plt.stem(t, y,'g-');
 #    plt.plot(t, y,'ro');
     plt.xlabel('time in seconds'); plt.ylabel('y(t)')
     plt.title('sinusoid of signal (floating point)')
     plt.grid()
     plt.show()
 
-    
-
     numPts = 30
-
     n = np.arange(0,numPts)
-    Fs = 2000   # sampling freq , ex= 10 times in 1 sec
+    Fs = 20.0   # sampling freq , ex= 10 times in 1 sec
     Ts = 1/Fs   # sampling period = 1/sampling frequency
     nT = n*Ts   #(1.0/10)
-    F = 1000.0   #  1 cycle per second
-    #[n1,yfloat] = fnGenSampledSinusoid(0.1, F, 0, Fs, 0, 1)
-
-    yNT = 0.1*np.cos(2*np.pi*F*nT)
+    F = 1.0   #  1 cycle per second
+    yNT = 1*np.cos(2*np.pi*F*nT)
     plt.figure(3)
     plt.plot(n, yNT,'ro');
     plt.stem(n, yNT,'g-');
@@ -92,24 +87,20 @@ def fn_mostBasicCosineSignal():
     plt.grid()
     plt.show()
 
-    wavfile.write('01_trial.wav', Fs, yfloat)
-    winsound.PlaySound('01_trial.wav', winsound.SND_FILENAME)
 
 
 
-def fn_genCosineSignalwrtTime(F=1000,showPlot=True):
-    print(F)
-    A=0.1; Phi = 0;Fs=16000; sTime=0; eTime = 1;
+def fn_genCosineSignalwrtTime():
+    A=0.5; F=6000; Phi = 0; Fs=16000; sTime=0; eTime = 1.4;
     [n,yfloat] = fnGenSampledSinusoid(A, F, Phi, Fs, sTime, eTime)
     # Lets plot what we have
     plt.figure(1)
-    numSamples =30
+    numSamples =72
     plt.plot(n[0:numSamples], yfloat[0:numSamples],'r--o');
     plt.xlabel('time in sec'); plt.ylabel('y[nT]')
     plt.title('sinusoid of signal (floating point)')
     plt.grid()
-    if(showPlot):
-        plt.show()
+    plt.show()
     print('Above figure 1 shows sinusoid')
 
     plt.figure(2)
@@ -118,36 +109,27 @@ def fn_genCosineSignalwrtTime(F=1000,showPlot=True):
     plt.xlabel('sample index n'); plt.ylabel('y[n]')
     plt.title('sinusoid of signal (floating point)')
     plt.grid()
-    if(showPlot):
-        plt.show()
+    plt.show()
     print('Above figure 1 shows sinusoid')
     
     # Although we created the signal in the date type float and dynamic range -1.0:1.0
     # when we save it and when we wish to listen to it using winsound it should be in 16 bit int.
-    print(yfloat)
     y_16bit = fnNormalizeFloatTo16Bit(yfloat)
     
     # Lets save the file, fname, sequence, and samplingrate needed
-    fileName ='./Lab1_Manual/Lab1_Example/sound/01_trial_'+str(F)+'.wav'
-    wavfile.write(fileName, Fs, y_16bit)
-    #wavfile.write('./sound/01_trial.wav', Fs, yfloat)   # wavfile write can save it as a 32 bit format float
+    wavfile.write('t1_16bit.wav', Fs, y_16bit)
+    wavfile.write('t1_float.wav', Fs, yfloat)   # wavfile write can save it as a 32 bit format float
     
     # Lets play the wavefile using winsound given the wavefile saved above
     #unfortunately winsound ONLY likes u16 bit values
     #thats why we had to normalize y->y_norm (16 bits) integers to play using winsounds
-    winsound.PlaySound(fileName, winsound.SND_FILENAME)
+    winsound.PlaySound('t1_16bit.wav', winsound.SND_FILENAME)
     
     # The following at float fail to play using winsound!
     #winsound.PlaySound('t1_float.wav', winsound.SND_FILENAME)
     #The file t1_float.wav cannot be played by winsound - but can be played by audacity?
-    # A=0.1; Phi = 0;Fs=10000; sTime=0; eTime = 1;
-    # [t,y] = fnGenSampledSinusoid(A, F, Phi, Fs, sTime, eTime)
-    # # t = np.arange(0,1.0,1/F)
-    # # y = 0.1*np.cos(2*np.pi*F*t)
-    # y_16bit_continous = fnNormalizeFloatTo16Bit(y)
-    # fileName2 ='./Lab1_Manual/Lab1_Example/sound/01_trial_continuos_'+str(F)+'.wav'
-    # wavfile.write(fileName2, F, y_16bit_continous)    
-    # winsound.PlaySound(fileName2, winsound.SND_FILENAME)
+
+
 
 
 #  Second Example, plotting complex exponential!
@@ -203,7 +185,6 @@ def fn_genComplexExpSignal():
 
 print("Example of Lab1 CE3007")
 #fn_mostBasicCosineSignal()
-for i in range(2000,33000,2000):
-    fn_genCosineSignalwrtTime(i,False)
-#fn_genComplexExpSignal()
+#fn_genCosineSignalwrtTime()
+fn_genComplexExpSignal()
 #print("end of prog")
