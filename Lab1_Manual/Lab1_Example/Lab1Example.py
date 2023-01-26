@@ -184,7 +184,7 @@ def fn_genComplexExpSignal():
     
 
 print("Example of Lab1 CE3007")
-#fn_mostBasicCosineSignal()
+fn_mostBasicCosineSignal()
 #fn_genCosineSignalwrtTime()
-fn_genComplexExpSignal()
+#fn_genComplexExpSignal()
 #print("end of prog")
