@@ -90,9 +90,8 @@ def fn_mostBasicCosineSignal():
 
 
 
-
 def fn_genCosineSignalwrtTime():
-    A=0.5; F=15900; Phi = 0.0; Fs=16000; sTime=0; eTime = 0.5;
+    A=0.5; F=6000; Phi = 0; Fs=16000; sTime=0; eTime = 1.4;
     [n,yfloat] = fnGenSampledSinusoid(A, F, Phi, Fs, sTime, eTime)
     # Lets plot what we have
     plt.figure(1)
@@ -133,68 +132,17 @@ def fn_genCosineSignalwrtTime():
 
 
 
-    
-    
-
-def playWaveSeq(yfloat,Fs):
-        y_16bit = fnNormalizeFloatTo16Bit(yfloat)
-        wavfile.write('t1_16bit.wav', Fs, y_16bit)
-        winsound.PlaySound('t1_16bit.wav', winsound.SND_FILENAME)
-
-
-
-def fn_genCosineSignal(startFreq, endFreq, StepFreq, Fs):
-    Farray = np.arange(startFreq, endFreq, StepFreq)
-    A=0.5;  Phi = 0.0; sTime=0; eTime = 0.5;
-    for F in Farray:
-        print('Generating Freq = %f, Fs = %f\n' %(F, Fs))
-        [n,yfloat] = fnGenSampledSinusoid(A, F, Phi, Fs, sTime, eTime)
-        playWaveSeq(yfloat,Fs)
-
-
-def fn_genDTMFSong(dtmfString):
-    durTone = 0.4;
-    Fs = 8000;
-    for whichKey in dtmfString:
-        fn_genDTMFSignal(whichKey, durTone, Fs)
-
-
-def fn_genDTMFSignal(whichKey, durTone, Fs):
-    (F1,F2) = fnGet_F1F2_DTMF(whichKey)
-    print('%c, dur=%.2f F1=%d, F2=%d , F=%.1f'  %(whichKey, durTone, F1,F2,Fs))
-    Phi     = 0
-    t       = np.arange(0,durTone,1.0/Fs)
-    yfloat  = 0.2*(np.cos(2 * np.pi * F1 * t + Phi) + np.cos(2 * np.pi * F2 * t + Phi))
-    playWaveSeq(yfloat,Fs)
-    # remember to make this small else clipping
-    return [t,yfloat]
-
-# returns the two freqeuncies of a DTMF key
-def fnGet_F1F2_DTMF(whichkey):
-    LookUpDictDTMF = {
-                  '1':(697,1209), '2':(697,1336), '3':(697,1477),
-                  '4':(770,1209), '5':(770,1336), '6':(770,1477),
-                  '7':(852,1209), '8':(852,1336), '9':(852,1477),
-                  '*':(941,1209), '0':(941,1336), '#':(941,1477),
-                      }
-
-    (F1,F2)=LookUpDictDTMF[whichkey]
-    return((F1,F2))
-
-
-
-###############################################
-#  Example, plotting complex exponential!
+#  Second Example, plotting complex exponential!
 #
 # Lets generate and plot complex exponential in 2-d, polar and 3d plot
 # how to include phase shift? Phi != 0?
-def fn_genComplexExpSignal(numSamples, A, w1):
+def fn_genComplexExpSignal():
 
     print('Below is figure 2 shows complex exponential')
+    numSamples = 200
+    A=0.99; w1=2*np.pi/50.0;
     n = np.arange(0, numSamples, 1)
     y1 = np.multiply(np.power(A, n), np.exp(1j * w1 * n))
-    for tt in np.arange(0,min(10,numSamples)):
-        print('%d, %.4f + j%.4f' %(n[tt],y1[tt].real,y1[tt].imag))
     
     
     # plotting in 2-D, the real and imag in the same figure
@@ -228,9 +176,6 @@ def fn_genComplexExpSignal(numSamples, A, w1):
     ax.legend()
     plt.show()
     
-    
-
-    
 
 #============================================================
 # Main prog starts here
@@ -239,17 +184,7 @@ def fn_genComplexExpSignal(numSamples, A, w1):
     
 
 print("Example of Lab1 CE3007")
-#[n,y] = fnGenSampledSinusoid(A=1,Freq=1,Phi=0, Fs=4,sTime=0.0,eTime=1.0)
-#print(n,y)
-
 #fn_mostBasicCosineSignal()
 #fn_genCosineSignalwrtTime()
-#fn_genCosineSignal(1000, 16000, 8000, 8000)
-#fn_genDTMFSignal('2', 1.0, 16000)
-#fn_genDTMFSong('696878614578969687868604')
-#fn_genDTMFSong('1234569#963692363699#963692931')
-
-numSamples = 72;
-A=0.98; w1=2*np.pi/36;
-fn_genComplexExpSignal(numSamples,A,w1)
-print("end of prog")
+fn_genComplexExpSignal()
+#print("end of prog")
